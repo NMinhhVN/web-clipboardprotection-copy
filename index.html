@@ -4,6 +4,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Clipboard Protection</title>
+    <link rel="manifest" href="manifest.json">
     <style>
         * {
             margin: 0;
@@ -78,7 +79,6 @@
 <script>
     function copyText() {
         const text = "Clipboard protection";
-
         if (navigator.clipboard && navigator.clipboard.writeText) {
             navigator.clipboard.writeText(text).then(() => {
                 document.getElementById('statusMessage').textContent = "Text copied to clipboard!";
@@ -109,6 +109,12 @@
     }
 
     document.getElementById('copyButton').addEventListener('click', copyText);
+
+    if ('serviceWorker' in navigator) {
+        navigator.serviceWorker.register('service-worker.js')
+            .then(registration => console.log('Service Worker registered with scope:', registration.scope))
+            .catch(error => console.log('Service Worker registration failed:', error));
+    }
 </script>
 
 </body>
