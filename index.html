@@ -1,0 +1,115 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Clipboard Protection</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: monospace;
+        }
+
+        body {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            height: 100vh;
+            background-color: black;
+            color: white;
+            text-align: center;
+            flex-direction: column;
+        }
+
+        h1 {
+            font-size: 2em;
+            margin-bottom: 40px;
+            color: #bb86fc;
+        }
+
+        .container {
+            background: #121212;
+            padding: 30px;
+            border-radius: 12px;
+            box-shadow: 0 6px 12px rgba(0, 0, 0, 0.5);
+            max-width: 300px;
+            width: 100%;
+        }
+
+        .btn {
+            display: inline-block;
+            padding: 15px 30px;
+            background-color: #bb86fc;
+            color: #121212;
+            border: none;
+            border-radius: 6px;
+            font-size: 1.1em;
+            cursor: pointer;
+            transition: background-color 0.3s ease;
+            width: 100%;
+        }
+
+        .btn:hover {
+            background-color: #9f5fdd;
+        }
+
+        .btn:active {
+            background-color: #bb86fc;
+            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.2) inset;
+        }
+
+        #statusMessage {
+            margin-top: 15px;
+            font-size: 1em;
+            color: #bbbbbb;
+        }
+    </style>
+</head>
+<body>
+
+<h1>Clipboard Protection</h1>
+<div class="container">
+    <button id="copyButton" class="btn">Copy Text</button>
+    <p id="statusMessage"></p>
+</div>
+
+<script>
+    function copyText() {
+        const text = "Clipboard protection";
+
+        if (navigator.clipboard && navigator.clipboard.writeText) {
+            navigator.clipboard.writeText(text).then(() => {
+                document.getElementById('statusMessage').textContent = "Text copied to clipboard!";
+            }).catch(() => {
+                fallbackCopyTextToClipboard(text);
+            });
+        } else {
+            fallbackCopyTextToClipboard(text);
+        }
+    }
+
+    function fallbackCopyTextToClipboard(text) {
+        const textArea = document.createElement("textarea");
+        textArea.value = text;
+        textArea.style.position = "fixed";
+        document.body.appendChild(textArea);
+        textArea.focus();
+        textArea.select();
+
+        try {
+            const successful = document.execCommand('copy');
+            document.getElementById('statusMessage').textContent = successful ? "Text copied to clipboard!" : "Failed to copy text.";
+        } catch (err) {
+            document.getElementById('statusMessage').textContent = "Failed to copy text.";
+        }
+
+        document.body.removeChild(textArea);
+    }
+
+    document.getElementById('copyButton').addEventListener('click', copyText);
+</script>
+
+</body>
+</html>
